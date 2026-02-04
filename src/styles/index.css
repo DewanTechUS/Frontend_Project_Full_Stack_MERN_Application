@@ -1,93 +1,1359 @@
-/* CSS RESET */
+/* =========================
+   0) Theme Variables
+   ========================= */
+:root {
+  --bg: #f8fafc;
+  --surface: rgba(255, 255, 255, 0.92);
+  --text: #0f172a;
+  --muted: #475569;
+  --border: rgba(15, 23, 42, 0.12);
+  --shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
 
-/* Box sizing rules */
+  --brand: #059669;
+  --brand-2: #10b981;
+  --brand-deep: #047857;
+
+  --danger: #dc2626;
+  --danger-2: #ef4444;
+
+  --radius: 18px;
+}
+
+/* =========================
+   1) Base + Reset
+   ========================= */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* Prevent font size inflation */
 html {
-  -moz-text-size-adjust: none;
-  -webkit-text-size-adjust: none;
-  text-size-adjust: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  height: 100%;
 }
 
-/* Remove default margin in favour of better control in authored CSS */
-body,
-h1,
-h2,
-h3,
-h4,
-p,
-figure,
-blockquote,
-dl,
-dd {
-  margin-block-start: 0;
-  margin-block-end: 0;
-}
-
-/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
-ul[role='list'],
-ol[role='list'] {
-  list-style: none;
-}
-
-/* Set core body defaults */
 body {
+  margin: 0;
   min-height: 100vh;
+  height: 100%;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   line-height: 1.5;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 20% -10%, #e0f2fe 0%, transparent 55%),
+    radial-gradient(900px 600px at 90% 10%, #ede9fe 0%, transparent 55%),
+    var(--bg);
 }
 
-/* Set shorter line heights on headings and interactive elements */
+#root {
+  min-height: 100vh;
+}
+
 h1,
 h2,
 h3,
 h4,
-button,
-input,
-label {
-  line-height: 1.1;
+p {
+  margin: 0;
 }
 
-/* Balance text wrapping on headings */
-h1,
-h2,
-h3,
-h4 {
-  text-wrap: balance;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-/* A elements that don't have a class get default styles */
-a:not([class]) {
-  text-decoration-skip-ink: auto;
-  color: currentColor;
-}
-
-/* Make images easier to work with */
-img,
-picture {
+img {
   max-width: 100%;
   display: block;
 }
 
-/* Inherit fonts for inputs and buttons */
 input,
 button,
 textarea,
 select {
-  font-family: inherit;
-  font-size: inherit;
+  font: inherit;
 }
 
-/* Make sure textareas without a rows attribute are not tiny */
-textarea:not([rows]) {
-  min-height: 10em;
+button {
+  cursor: pointer;
 }
 
-/* Anything that has been anchored to should have extra scroll margin */
-:target {
-  scroll-margin-block: 5ex;
+::selection {
+  background: rgba(16, 185, 129, 0.22);
+}
+
+/* =========================
+   2) App Shell + Layout
+   ========================= */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 18px 36px;
+  flex: 1; /* footer stays bottom */
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* =========================
+   3) Navbar (Desktop Default)
+   ========================= */
+.navbar {
+  background: rgba(248, 250, 252, 0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+.navbar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  min-width: 140px;
+}
+
+.navbar-brand::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #6366f1, var(--brand-2));
+  box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.1);
+}
+
+.navbar-titlewrap {
+  min-width: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.navbar-title {
+  font-size: 28px;
+  line-height: 1.25;
+}
+
+.navbar-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(71, 85, 105, 0.95);
+  margin-top: 2px;
+  justify-content: center;
+}
+
+.dot {
+  opacity: 0.6;
+}
+
+.navbar-user {
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.7);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.navbar-user strong {
+  color: rgba(15, 23, 42, 0.95);
+}
+
+.navbar-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #dc2626;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  font-weight: 800;
+}
+
+.navbar-btn.danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  border-color: rgba(220, 38, 38, 0.5);
+  margin-right: 6px;
+}
+
+/* Subrow (links + note) */
+.navbar-subrow {
+  padding: 0 12px 10px;
+  text-align: center;
+}
+
+.navbar-links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  font-weight: 600;
+  margin-top: 0;
+}
+
+.navbar-link-out {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.9;
+}
+
+.navbar-subtext {
+  margin-top: 4px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.navbar-note {
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 12px;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.navbar-under-note {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 8px;
+}
+
+/* Pills */
+.pill-btn,
+.pill-link {
+  border: 1px solid #c7c8f8;
+  background: linear-gradient(135deg, #7784f8, #4a4dea);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 800;
+  transition: 0.2s ease;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.10);
+  margin-right: 6px;
+}
+
+.pill-btn:last-child,
+.pill-link:last-child {
+  margin-right: 0;
+}
+
+.pill-btn:hover,
+.pill-link:hover {
+  transform: translateY(-1px);
+}
+
+/* Controls (Dark/Sound buttons row) */
+.navbar-controls {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  display: flex;
+  justify-content: center; /* center row */
+}
+
+.navbar-controls-right {
+  width: 100%;
+  margin-left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center buttons */
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.navbar-controls-right .pill-btn {
+  min-width: 110px;
+}
+
+/* =========================
+   4) Inputs & Buttons (shared)
+   ========================= */
+.auth-input,
+.dashboard-input,
+.task-input {
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.auth-input:focus,
+.dashboard-input:focus,
+.task-input:focus {
+  border-color: rgba(16, 185, 129, 0.55);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.14);
+}
+
+.dashboard-btn,
+.task-btn {
+  min-width: 140px;
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(5, 150, 105, 0.45);
+  background: linear-gradient(135deg, var(--brand-2), var(--brand));
+  color: white;
+  font-weight: 900;
+  transition: 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.dashboard-btn:hover,
+.task-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 22px rgba(16, 185, 129, 0.22);
+}
+
+.dashboard-del-btn,
+.task-delete {
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(220, 38, 38, 0.45);
+  background: linear-gradient(135deg, var(--danger-2), var(--danger));
+  color: white;
+  font-weight: 900;
+  transition: 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-del-btn:hover,
+.task-delete:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 22px rgba(239, 68, 68, 0.18);
+}
+
+/* =========================
+   Priority Colors (text)
+   ========================= */
+.priority-low {
+  color: #0ea5e9; /* blue */
+  font-weight: 900;
+}
+
+.priority-medium {
+  color: #f59e0b; /* amber */
+  font-weight: 900;
+}
+
+.priority-high {
+  color: #ef4444; /* red */
+  font-weight: 900;
+}
+
+html.dark .priority-low {
+  color: #38bdf8;
+}
+html.dark .priority-medium {
+  color: #fbbf24;
+}
+html.dark .priority-high {
+  color: #f87171;
+}
+
+/* Priority color override (dashboard/task priority labels) */
+.dashboard-priority.priority-low,
+.task-priority.priority-low {
+  color: #0ea5e9 !important;
+}
+
+.dashboard-priority.priority-medium,
+.task-priority.priority-medium {
+  color: #f59e0b !important;
+}
+
+.dashboard-priority.priority-high,
+.task-priority.priority-high {
+  color: #ef4444 !important;
+}
+
+/* Priority button ONLY */
+.priority-btn.priority-low {
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  color: #fff;
+}
+
+.priority-btn.priority-medium {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #fff;
+}
+
+.priority-btn.priority-high {
+  background: linear-gradient(135deg, #f87171, #ef4444);
+  color: #fff;
+}
+
+/* =========================
+   5) Auth Split
+   ========================= */
+.auth-split {
+  max-width: 980px;
+  margin: 26px auto 0;
+  border-radius: 10px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: white;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.auth-left {
+  padding: 42px 40px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+}
+
+.auth-panel {
+  width: 100%;
+  max-width: 360px;
+}
+
+.auth-title {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.auth-subtitle {
+  margin-bottom: 16px;
+  opacity: 0.85;
+  text-align: center;
+}
+
+.auth-form {
+  display: grid;
+  gap: 12px;
+}
+
+.auth-submit {
+  margin-top: 6px;
+  width: 100%;
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(5, 150, 105, 0.55);
+  background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+  color: white;
+  font-weight: 900;
+  transition: 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 22px rgba(5, 150, 105, 0.25);
+}
+
+.auth-or {
+  text-align: center;
+  margin: 16px 0 10px;
+  font-size: 13px;
+  color: rgba(71, 85, 105, 0.95);
+}
+
+.auth-social {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.social-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(15, 23, 42, 0.04);
+  font-weight: 900;
+}
+
+.social-btn:hover {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.auth-error {
+  color: #b91c1c;
+  font-weight: 800;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.auth-right {
+  background: linear-gradient(135deg, #34d399, #059669);
+  color: white;
+  padding: 42px 40px;
+  display: grid;
+  place-items: center;
+}
+
+.auth-right-inner {
+  max-width: 380px;
+  text-align: center;
+}
+
+.auth-welcome {
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.auth-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  opacity: 0.95;
+  margin-bottom: 18px;
+}
+
+.auth-cta {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.auth-cta:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.auth-footer {
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* =========================
+   6) Dashboard
+   ========================= */
+.dashboard {
+  display: grid;
+  gap: 14px;
+}
+
+.dashboard-title {
+  font-size: 26px;
+  font-weight: 950;
+  letter-spacing: 0.2px;
+  text-align: center;
+}
+
+.dashboard-form {
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.dashboard-error,
+.page-error {
+  color: #b91c1c;
+  font-weight: 800;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  padding: 10px 12px;
+  border-radius: 14px;
+}
+
+.dashboard-list {
+  display: grid;
+  gap: 10px;
+}
+
+.dashboard-card {
+  background: var(--surface);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+}
+
+.dashboard-card-title {
+  font-size: 16px;
+  font-weight: 950;
+}
+
+.dashboard-card-subtitle {
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(71, 85, 105, 0.95);
+}
+
+.dashboard-card-date {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.dashboard-card-date strong {
+  font-weight: 800;
+}
+
+.dashboard-card-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.dashboard-open-link {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  background: linear-gradient(135deg, var(--brand-2), var(--brand));
+  color: #fff;
+  font-weight: 900;
+  font-size: 12px;
+  transition: 0.2s ease;
+}
+
+.dashboard-open-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(16, 185, 129, 0.18);
+}
+
+.dashboard-priority {
+  font-weight: 900;
+  color: rgba(5, 150, 105, 0.95);
+}
+
+/* =========================
+   7) Project Details + Tasks
+   ========================= */
+.project-details {
+  display: grid;
+  gap: 14px;
+}
+
+.project-header {
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: var(--surface);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+}
+
+.project-header h2 {
+  font-size: 22px;
+  font-weight: 950;
+}
+
+.project-subtitle {
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(71, 85, 105, 0.95);
+}
+
+.project-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.project-title-row .pill-btn {
+  height: 42px;
+  padding: 0 14px;
+  font-weight: 800;
+}
+
+.project-delete-btn {
+  width: auto;
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #dc2626;
+  color: white;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.project-delete-btn:hover {
+  background: #b91c1c;
+}
+
+/* Action row (Back left, Delete right) */
+.project-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.project-back-btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.project-back-btn:hover {
+  transform: translateY(-1px);
+}
+
+.task-form {
+  display: grid;
+  grid-template-columns: 2.2fr 1.8fr 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.task-list {
+  display: grid;
+  gap: 10px;
+}
+
+.task-row {
+  background: var(--surface);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.task-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.task-complete {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(71, 85, 105, 0.95);
+}
+
+.task-title {
+  font-weight: 950;
+  white-space: normal;
+}
+
+.task-title.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.task-priority {
+  font-weight: 900;
+  color: rgba(5, 150, 105, 0.95);
+}
+
+.task-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.task-edit-wrap {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.task-edit-input {
+  min-width: 220px;
+}
+
+/* Delete ALL button */
+.task-delete-all {
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 8px;
+  border: none;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: background 0.2s ease, transform 0.1s ease, opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  min-width: 170px;
+}
+
+.task-delete-all:hover:not(:disabled) {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.task-delete-all:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.task-note {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #475569;
+}
+
+/* =========================
+   8) Modals
+   ========================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 9999;
+}
+
+.modal-card {
+  width: min(520px, 100%);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
+  padding: 16px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 950;
+  margin: 0 0 6px;
+}
+
+.modal-text {
+  font-size: 13px;
+  color: rgba(71, 85, 105, 0.95);
+  margin: 0 0 12px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.modal-actions button {
+  margin: 8px 0px 6px 0px;
+  min-width: 150px;
+  height: 46px;
+  padding: 2px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-actions .task-delete {
+  background: #ef4444;
+  color: white;
+  border: none;
+}
+
+.modal-actions .task-delete-all {
+  background: #fca5a5;
+  color: white;
+  border: none;
+}
+
+.modal-actions .task-delete-all:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================
+   9) Footer
+   ========================= */
+.app-footer {
+  margin-top: auto;
+  padding: 28px 14px;
+  text-align: center;
+  border-top: 1px solid rgba(15, 23, 42, 0.12);
+  color: #475569;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.footer-link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.footer-subtext {
+  margin: 0 0 14px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.footer-note {
+  max-width: 980px;
+  margin: 0 auto 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+}
+
+.footer-copy {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* =========================
+   10) Background Video
+   ========================= */
+.bg-root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.55), rgba(15, 23, 42, 0.75));
+  z-index: 1;
+}
+
+.bg-content {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+/* login wrapper style*/
+.login-video-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+
+.login-video-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  z-index: -1;
+}
+
+/* =========================
+   11) Responsive Design
+   mobile adjustments
+   ========================= */
+@media (max-width: 900px) {
+  .auth-split {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-right {
+    order: -1;
+  }
+
+  .task-form {
+    grid-template-columns: 1fr;
+  }
+
+  .task-btn,
+  .task-delete-all {
+    width: 100%;
+  }
+
+  .project-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-edit-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .task-edit-input {
+    min-width: 0;
+  }
+
+  .navbar-inner {
+    gap: 12px;
+  }
+
+  .navbar-titlewrap,
+  .navbar-meta {
+    text-align: center;
+    justify-content: center;
+  }
+
+  .navbar-subrow {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .navbar-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .navbar-note {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .navbar-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .navbar-left,
+  .navbar-brand,
+  .navbar-titlewrap {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    flex: unset;
+    min-width: 0;
+  }
+
+  .navbar-title {
+    display: block;
+    font-size: 14px;
+    line-height: 1.25;
+    padding: 0 6px;
+    text-align: center;
+  }
+
+  .navbar-right {
+    width: 100%;
+    margin-left: 0;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .navbar-meta {
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .navbar-subrow {
+    padding: 0 12px 10px;
+    text-align: center;
+  }
+
+  .navbar-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .navbar-note {
+    max-width: 100%;
+    font-size: 13px;
+    padding: 10px 12px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .navbar-under-note {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .navbar-subtext {
+    font-size: 12px;
+    padding: 0 6px;
+  }
+
+  .navbar-user {
+    width: 100%;
+    text-align: center;
+  }
+
+  .task-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .task-actions,
+  .dashboard-card-actions {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .task-edit-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .task-edit-input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .auth-left,
+  .auth-right {
+    padding: 26px 18px;
+  }
+
+  .auth-title {
+    font-size: 26px;
+  }
+
+  .modal-actions {
+    justify-content: stretch;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+
+  .project-actions-row {
+    flex-wrap: nowrap;
+  }
+
+  .project-back-btn,
+  .project-delete-btn {
+    padding: 10px 12px;
+    border-radius: 8px;
+  }
+}
+
+/* =========================
+   12) Dark Mode
+   toggles with: html.dark
+   ========================= */
+html.dark {
+  --bg: #0b1220;
+  --surface: rgba(15, 23, 42, 0.78);
+  --text: #e5e7eb;
+  --muted: #a3adc2;
+  --border: rgba(226, 232, 240, 0.14);
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+
+  --brand: #34d399;
+  --brand-2: #10b981;
+  --brand-deep: #059669;
+
+  --danger: #f87171;
+  --danger-2: #ef4444;
+}
+
+html.dark body {
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(56, 189, 248, 0.12) 0%, transparent 55%),
+    radial-gradient(900px 600px at 90% 10%, rgba(167, 139, 250, 0.12) 0%, transparent 55%),
+    var(--bg);
+}
+
+html.dark .navbar {
+  background: rgba(2, 6, 23, 0.78);
+  border-bottom-color: rgba(226, 232, 240, 0.12);
+}
+
+/* Dark mode surfaces */
+html.dark .card,
+html.dark .dashboard-card,
+html.dark .project-header,
+html.dark .task-row,
+html.dark .modal-card,
+html.dark .navbar-note,
+html.dark .footer-note,
+html.dark .app-footer,
+html.dark .auth-split,
+html.dark .auth-left {
+  background: rgba(15, 23, 42, 0.82);
+  border-color: rgba(226, 232, 240, 0.14);
+  color: var(--text);
+}
+
+/* Dark mode text helpers */
+html.dark .navbar-title,
+html.dark .navbar-meta,
+html.dark .navbar-subtext,
+html.dark .navbar-user,
+html.dark .dashboard-card-subtitle,
+html.dark .project-subtitle,
+html.dark .task-note,
+html.dark .modal-text,
+html.dark .footer-subtext {
+  color: rgba(226, 232, 240, 0.86);
+}
+
+/* Inputs + selects */
+html.dark .auth-input,
+html.dark .dashboard-input,
+html.dark .task-input,
+html.dark select {
+  background: rgba(2, 6, 23, 0.55);
+  border-color: rgba(226, 232, 240, 0.16);
+  color: var(--text);
+}
+
+html.dark .auth-input::placeholder,
+html.dark .dashboard-input::placeholder,
+html.dark .task-input::placeholder {
+  color: rgba(226, 232, 240, 0.55);
+}
+
+/* Buttons that were white */
+html.dark .pill-btn,
+html.dark .navbar-btn,
+html.dark .dashboard-open-link {
+  background: rgba(2, 6, 23, 0.55);
+  border-color: rgba(226, 232, 240, 0.16);
+  color: var(--text);
+}
+
+/* Keep auth right readable */
+html.dark .auth-right {
+  color: #fff;
+}
+
+/* Error boxes */
+html.dark .page-error,
+html.dark .dashboard-error,
+html.dark .auth-error {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.22);
+}
+
+/* Fix "Logged in as" visibility */
+html.dark .navbar-user {
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+html.dark .navbar-user,
+html.dark .navbar-user * {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+html.dark .navbar-user strong {
+  color: #fff !important;
+  font-weight: 900 !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* =========================
+   13) Logout modal button color swap
+   ========================= */
+
+
+.modal-actions .task-delete {
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  color: #fff !important;
+}
+
+.modal-actions .task-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  color: #fff !important;
+}
+html.dark .task-complete {
+  color: rgba(226, 232, 240, 0.92) !important;
+}
+
+
+.task-complete input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand-2); /* modern browsers */
+}
+
+
+html.dark .task-complete input[type="checkbox"] {
+  filter: brightness(1.3) contrast(1.1);
 }
