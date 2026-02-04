@@ -1,16 +1,28 @@
 import { useEffect, useState } from "react";
-import { createProject, deleteProject, getMyProjects } from "../api/projects";
+import {
+  createProject,
+  deleteProject,
+  getMyProjects,
+  updateProject,
+} from "../api/projects";
 import { Link } from "react-router-dom";
 
-// Helper formatter functions // date only
+/* Date helpers */
 function fmtDate(d) {
   if (!d) return "—";
   return new Date(d).toLocaleDateString();
 }
-// Helper formatter functions // datetime
+
 function fmtDateTime(d) {
   if (!d) return "—";
   return new Date(d).toLocaleString();
+}
+
+/* Priority cycle helper */
+function nextPriority(current = "medium") {
+  if (current === "low") return "medium";
+  if (current === "medium") return "high";
+  return "low";
 }
 
 export default function Dashboard() {
@@ -18,13 +30,12 @@ export default function Dashboard() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("medium");
-
-  // NEW: due date state
   const [dueDate, setDueDate] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-// Load projects from API
+
+  /* Load projects */
   async function loadProjects() {
     setLoading(true);
     setError("");
@@ -37,22 +48,22 @@ export default function Dashboard() {
       setLoading(false);
     }
   }
-// Load projects on mount // it will run only once
+
   useEffect(() => {
     loadProjects();
   }, []);
 
+  /* Create project */
   async function handleCreate(e) {
     e.preventDefault();
     setError("");
     try {
-      // NEW: Send dueDate too
       await createProject({ name, description, priority, dueDate });
 
       setName("");
       setDescription("");
       setPriority("medium");
-      setDueDate(""); // NEW: Reset after create
+      setDueDate("");
 
       await loadProjects();
     } catch (err) {
@@ -60,6 +71,7 @@ export default function Dashboard() {
     }
   }
 
+  /* Delete project (unused here) */
   async function handleDeleteProject(projectId, projectName) {
     const ok = window.confirm(
       `Delete project "${projectName}"? This cannot be undone.`
@@ -77,8 +89,9 @@ export default function Dashboard() {
 
   return (
     <section className="dashboard">
-      <h2 className="dashboard-title">Dashboard</h2>
+      <h2 className="dashboard-title">Project Dashboard</h2>
 
+      {/* Create Project Form */}
       <form onSubmit={handleCreate} className="dashboard-form card">
         <input
           placeholder="Project name"
@@ -105,7 +118,6 @@ export default function Dashboard() {
           <option value="high">High</option>
         </select>
 
-        {/* Date picker added after priority */}
         <input
           type="date"
           value={dueDate}
@@ -118,6 +130,7 @@ export default function Dashboard() {
 
       {error && <p className="dashboard-error">{error}</p>}
 
+      {/* Project List */}
       {loading ? (
         <p>Loading...</p>
       ) : projects.length === 0 ? (
@@ -131,39 +144,59 @@ export default function Dashboard() {
 
                 <p className="dashboard-card-subtitle">
                   {(p.description || "No description")} •{" "}
-                  <span className="dashboard-priority">
-                    {p.priority || "medium"}
-                  </span>
-                  {p.dueDate ? (
+                 <span
+  className={`dashboard-priority priority-${p.priority || "medium"}`}
+>
+  {p.priority || "medium"}
+</span>
+
+                  {p.dueDate && (
                     <>
                       {" "}
                       •{" "}
                       <span className="dashboard-duedate">
-                        Due: {new Date(p.dueDate).toLocaleDateString()}
+                        Due: {fmtDate(p.dueDate)}
                       </span>
                     </>
-                  ) : null}
+                  )}
                 </p>
 
-                {/* Show created time + due date */}
                 <p className="dashboard-card-date">
-                  Due: {fmtDate(p.dueDate)} • Created: {fmtDateTime(p.createdAt)}
+                  Due: {fmtDate(p.dueDate)} • Created:{" "}
+                  {fmtDateTime(p.createdAt)}
                 </p>
               </div>
 
+              {/* Actions */}
               <div className="dashboard-card-actions">
                 <Link to={`/projects/${p._id}`} className="dashboard-open-link">
                   Open Project
                 </Link>
-                
-{/*  Dashboard delete removed – delete is handled inside ProjectDetails */}
-                {/* <button
+
+                {/* PRIORITY EDIT BUTTON */}
+                <button
+  type="button"
+  className={`pill-btn priority-btn priority-${p.priority || "medium"}`}
+  onClick={async () => {
+    await updateProject(p._id, {
+      priority: nextPriority(p.priority),
+    });
+    loadProjects();
+  }}
+>
+  {(p.priority || "medium").toptobaseCase?.() ?? (p.priority || "medium").toUpperCase()}
+</button>
+
+                {/* Delete intentionally handled in ProjectDetails */}
+                {/*
+                <button
                   type="button"
                   className="dashboard-del-btn"
                   onClick={() => handleDeleteProject(p._id, p.name)}
                 >
                   Delete
-                </button> */} 
+                </button>
+                */}
               </div>
             </div>
           ))}
