@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-// Put your mp3 in: src/assets/music.mp3
+// audio file //  
 import musicFile from "../assets/music.mp3";
 
 export default function Navbar() {
@@ -76,13 +76,11 @@ export default function Navbar() {
       {/* HEADER CONTENT STACKED */}
       {!user && (
         <>
-          {/* TITLE */}
           <div className="navbar-subrow">
             <Link to="/" className="navbar-title">
               Pro-Tasker Project - Full-Stack MERN Application
             </Link>
 
-            {/* META */}
             <div className="navbar-meta">
               <span>
                 <strong>Author:</strong> Dewan Mahmud
@@ -111,9 +109,9 @@ export default function Navbar() {
         </>
       )}
 
-      {/* CONTROLS ROW */}
-      <div className="navbar-inner">
-        <div className="navbar-right">
+      {/*  CONTROLS ROW */}
+      <div className="navbar-inner navbar-controls">
+        <div className="navbar-controls-right">
           {/* dark mode */}
           <button
             type="button"
@@ -136,9 +134,10 @@ export default function Navbar() {
 
           {user && (
             <>
-              <button className="navbar-btn" onClick={openLogoutModal}>
+              <button type="button" className="navbar-btn" onClick={openLogoutModal}>
                 Logout
               </button>
+
               <span className="navbar-user">
                 Logged in as <strong>{user.name || "Rocky"}</strong>
               </span>
@@ -160,10 +159,10 @@ export default function Navbar() {
             <p className="modal-text">Are you sure you want to log out?</p>
 
             <div className="modal-actions">
-              <button className="task-delete" onClick={closeLogoutModal}>
+              <button type="button" className="task-delete" onClick={closeLogoutModal}>
                 No
               </button>
-              <button className="task-btn" onClick={confirmLogout}>
+              <button type="button" className="task-btn" onClick={confirmLogout}>
                 Yes
               </button>
             </div>
