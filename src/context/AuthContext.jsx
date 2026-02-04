@@ -1,72 +1,91 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { apiLogin, apiRegister } from "../api/auth";
-
+import {
+  login as apiLogin,
+  register as apiRegister,
+  logout as apiLogout,
+  getMe as apiGetMe,
+} from "../api/auth";
+// Create AuthContext
 const AuthContext = createContext(null);
-// AuthProvider component // provides authentication context to its children
+// AuthProvider component
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(() => localStorage.getItem("token") || "");
-  const [user, setUser] = useState(() => {
-    const raw = localStorage.getItem("user");
-    return raw ? JSON.parse(raw) : null;
-  });
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-// Sync token and user state with localStorage
+  const [booting, setBooting] = useState(true);
+// On mount, check for existing auth token and fetch user data
   useEffect(() => {
-    if (token) localStorage.setItem("token", token);
-    else localStorage.removeItem("token");
-  }, [token]);
-// Sync user state with localStorage
-  useEffect(() => {
-    if (user) localStorage.setItem("user", JSON.stringify(user));
-    else localStorage.removeItem("user");
-  }, [user]);
-// Login function // calls apiLogin and updates state
-  async function login(email, password) {
+    let alive = true;
+// Boot function to fetch user data
+    async function boot() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        if (alive) setBooting(false);
+        return;
+      }
+
+      try {
+        const data = await apiGetMe();
+        const u = data?.user ?? data;
+        if (alive) setUser(u || null);
+      } catch {
+        apiLogout();
+        if (alive) setUser(null);
+      } finally {
+        if (alive) setBooting(false);
+      }
+    }
+
+    boot();
+    return () => {
+      alive = false;
+    };
+  }, []);
+// Login function
+  async function login(payload) {
     setLoading(true);
     try {
-      const data = await apiLogin(email, password);
-      setToken(data.token || "");
-      setUser(data.user || null);
-      return { ok: true };
-    } catch (err) {
-      const message = err?.response?.data?.message || "Login failed";
-      return { ok: false, message };
+      const data = await apiLogin(payload);
+      setUser(data?.user || null);
+      return data;
     } finally {
       setLoading(false);
     }
   }
-// Register function // calls apiRegister and updates state
-// similar to login
-  async function register(name, email, password) {
+// Register function
+  async function register(payload) {
     setLoading(true);
     try {
-      const data = await apiRegister(name, email, password);
-      setToken(data.token || "");
-      setUser(data.user || null);
-      return { ok: true };
-    } catch (err) {
-      const message = err?.response?.data?.message || "Register failed";
-      return { ok: false, message };
+      const data = await apiRegister(payload);
+      setUser(data?.user || null);
+      return data;
     } finally {
       setLoading(false);
     }
   }
-// Logout function // clears token and user state
+// Logout function
   function logout() {
-    setToken("");
+    apiLogout();
     setUser(null);
   }
-// Memoize context value to optimize performance // only changes when dependencies change
-  const value = useMemo(
-    () => ({ token, user, loading, isAuthed: Boolean(token), login, register, logout }),
-    [token, user, loading]
-  );
 
+  const value = useMemo(
+    () => ({
+      user,
+      loading,
+      booting,
+      isAuthed: !!user,
+      login,
+      register,
+      logout,
+      setUser,
+    }),
+    [user, loading, booting]
+  );
+// Provide AuthContext to children
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-// Custom hook to use AuthContext
+
+// Hook to use AuthContext
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within an AuthProvider");
-  return ctx;
+  return useContext(AuthContext);
 }
