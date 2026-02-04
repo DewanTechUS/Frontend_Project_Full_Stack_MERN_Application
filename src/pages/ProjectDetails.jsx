@@ -48,6 +48,10 @@ export default function ProjectDetails() {
   const [deleteProjectText, setDeleteProjectText] = useState("");
   const [deletingProject, setDeletingProject] = useState(false);
 
+  // Delete SINGLE task modal
+  const [showDeleteOneModal, setShowDeleteOneModal] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
+
   async function load() {
     setLoading(true);
     setError("");
@@ -109,6 +113,30 @@ export default function ProjectDetails() {
     setError("");
     try {
       await deleteTask(projectId, task._id);
+      await load();
+    } catch (err) {
+      setError(err?.response?.data?.message || "Failed to delete task");
+    }
+  }
+
+  // Single task modal helpers
+  function openDeleteOneModal(task) {
+    setTaskToDelete(task);
+    setShowDeleteOneModal(true);
+  }
+
+  function closeDeleteOneModal() {
+    setShowDeleteOneModal(false);
+    setTaskToDelete(null);
+  }
+
+  async function confirmDeleteOneTask() {
+    if (!taskToDelete) return;
+
+    setError("");
+    try {
+      await deleteTask(projectId, taskToDelete._id);
+      closeDeleteOneModal();
       await load();
     } catch (err) {
       setError(err?.response?.data?.message || "Failed to delete task");
@@ -237,34 +265,36 @@ export default function ProjectDetails() {
 
   return (
     <section className="project-details">
-     <div className="project-header">
-  {/*  Mobile/Desktop action row */}
-  <div className="project-actions-row">
-    <button
-      type="button"
-      className="project-back-btn"
-      onClick={() => navigate("/dashboard")}
-    >
-    Dashboard
-    </button>
+      <div className="project-header">
+        {/*  Mobile/Desktop action row */}
+        <div className="project-actions-row">
+          <button
+            type="button"
+            className="project-back-btn"
+            onClick={() => navigate("/dashboard")}
+          >
+            Dashboard
+          </button>
 
-    <button
-      type="button"
-      className="project-delete-btn"
-      onClick={() => setShowDeleteProjectModal(true)}
-    >
-      Delete Project
-    </button>
-  </div>
+          <button
+            type="button"
+            className="project-delete-btn"
+            onClick={() => setShowDeleteProjectModal(true)}
+          >
+            Delete Project
+          </button>
+        </div>
 
-  <h2>{project.name}</h2>
+        <h2>{project.name}</h2>
 
-  <p className="project-task-count">
-    Completed {tasks.filter((t) => t.completed).length} / {tasks.length}
-  </p>
+        <p className="project-task-count">
+          Completed {tasks.filter((t) => t.completed).length} / {tasks.length}
+        </p>
 
-  <p className="project-subtitle">{project.description || "No description"}</p>
-</div>
+        <p className="project-subtitle">
+          {project.description || "No description"}
+        </p>
+      </div>
 
       <form onSubmit={handleAddTask} className="task-form">
         <input
@@ -353,7 +383,7 @@ export default function ProjectDetails() {
         </div>
       )}
 
-      {/* MODAL: Delete Project (I added 2-step failsafe) */}
+      {/* MODAL: Delete Project (2-step failsafe) */}
       {showDeleteProjectModal && (
         <div
           className="modal-overlay"
@@ -414,6 +444,43 @@ export default function ProjectDetails() {
         </div>
       )}
 
+      {/* MODAL: Delete SINGLE task */}
+      {showDeleteOneModal && (
+        <div
+          className="modal-overlay"
+          onClick={(e) => {
+            if (e.target.classList.contains("modal-overlay"))
+              closeDeleteOneModal();
+          }}
+        >
+          <div className="modal-card" role="dialog" aria-modal="true">
+            <h3 className="modal-title">Delete Task?</h3>
+            <p className="modal-text">
+              Are you sure you want to delete{" "}
+              <strong>{taskToDelete?.title || "this task"}</strong>?
+            </p>
+
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="task-btn"
+                onClick={closeDeleteOneModal}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="task-delete"
+                onClick={confirmDeleteOneTask}
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {tasks.length === 0 ? (
         <p>No tasks yet.</p>
       ) : (
@@ -466,7 +533,12 @@ export default function ProjectDetails() {
                         }`}
                       >
                         {t.title}{" "}
-                        <span className="task-priority">
+                        {/*  ONLY CHANGE: add priority class */}
+                        <span
+                          className={`task-priority priority-${
+                            t.priority || "medium"
+                          }`}
+                        >
                           ({t.priority || "medium"})
                         </span>
                       </span>
@@ -503,10 +575,12 @@ export default function ProjectDetails() {
                       >
                         Edit
                       </button>
+
+                      {/* open modal instead of deleting immediately */}
                       <button
                         type="button"
                         className="task-delete"
-                        onClick={() => handleDelete(t)}
+                        onClick={() => openDeleteOneModal(t)}
                       >
                         Delete
                       </button>
