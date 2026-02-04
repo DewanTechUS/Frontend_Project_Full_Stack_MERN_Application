@@ -23,3 +23,9 @@ export async function getProjectById(projectId) {
   const res = await api.get(`/api/projects/${projectId}`);
   return res.data;
 }
+
+//UPDATE project (priority, name, dueDate, etc.)
+export async function updateProject(id, updates) {
+  const res = await api.put(`/api/projects/${id}`, updates);
+  return res.data;
+}
