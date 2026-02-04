@@ -1,13 +1,16 @@
 import axios from "axios";
 
-const client = axios.create({
-  baseURL: "", // I have set baseURL to empty string to use relative paths // for development and production // backend URL will be prepended automatically // IMPORTANT: use Vite proxy (/api -> backend)
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
 });
 
-client.interceptors.request.use((config) => {
+// Add token to every request automatically
+// This ensures that authenticated routes can be accessed seamlessly 
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
-
-export default client;
+// console.log ("API Client initialized with baseURL:", api.defaults.baseURL);
+// You can add response interceptors here if needed
+export default api;
